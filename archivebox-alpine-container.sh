@@ -11,12 +11,13 @@ buildah run "$build0" sh -c 'apk add --no-cache -q --update npm \
   python3-dev &&\
   mkdir -p /usr/src/npm/ &&\
   cd /usr/src/npm &&\
-  npm install --quiet --production "git+https://github.com/postlight/mercury-parser.git" "github:ArchiveBox/readability-extractor" "git+https://github.com/gildas-lormeau/SingleFile.git" &&\
+  npm install --silent --production "git+https://github.com/postlight/mercury-parser.git" "github:ArchiveBox/readability-extractor" "git+https://github.com/gildas-lormeau/SingleFile.git" &&\
   cd /usr/src/ &&\
   python3 -m venv .venv &&\
   .venv/bin/pip install -q --no-cache-dir -U pip wheel &&\
   .venv/bin/pip install -q --no-cache-dir -U archivebox &&\
   .venv/bin/pip uninstall -q --no-cache-dir -y youtube-dl'
+buildah run "$build0" sh -c "find /usr/src/.venv \( -type d -a -name test -o -name tests \) -o \( -type f -a -name '*.pyc' -o -name '*.pyo' \) -exec rm -rf '{}' \+"
 
 buildah run "$build1" sh -c 'apk add --no-cache -q --update curl \
   python3 \
